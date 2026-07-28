@@ -4,6 +4,8 @@ import { Role } from "@prisma/client";
 import customerController from "../controllers/customer.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import { roleMiddleware } from "../middleware/auth.middleware.js";
+import { validate } from "../middleware/validate.middleware.js";
+import { createCustomerSchema, updateCustomerSchema } from "../validations/customer.validation.js";
 
 const router = Router();
 
@@ -12,9 +14,9 @@ const router = Router();
 router.get("/", authMiddleware, customerController.getAll);
 router.get("/:id", authMiddleware, customerController.getById);
 
-router.post("/", authMiddleware, roleMiddleware(Role.ADMIN, Role.SALES), customerController.create);
+router.post("/", authMiddleware, roleMiddleware(Role.ADMIN, Role.SALES),validate(createCustomerSchema), customerController.create);
 
-router.put("/:id", authMiddleware, roleMiddleware(Role.ADMIN, Role.SALES), customerController.update);
+router.put("/:id", authMiddleware, roleMiddleware(Role.ADMIN, Role.SALES),validate(updateCustomerSchema), customerController.update);
 
 router.delete("/:id", authMiddleware, roleMiddleware(Role.ADMIN), customerController.delete);
 
