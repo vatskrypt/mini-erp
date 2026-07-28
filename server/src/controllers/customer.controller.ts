@@ -1,10 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import {
-  CustomerStatus,
-  CustomerType,
-} from "@prisma/client";
 
 import customerService from "../services/customer.service.js";
+
 
 type CustomerParams = {
   id: string;
@@ -56,7 +53,7 @@ class CustomerController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> {
+  ) {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -66,30 +63,8 @@ class CustomerController {
         return;
       }
 
-      const {
-        name,
-        mobile,
-        email,
-        businessName,
-        gstNumber,
-        customerType,
-        status,
-        address,
-        followUpDate,
-        notes,
-      } = req.body;
-
       const customer = await customerService.create({
-        name,
-        mobile,
-        email,
-        businessName,
-        gstNumber,
-        customerType: customerType as CustomerType,
-        status: status as CustomerStatus,
-        address,
-        followUpDate,
-        notes,
+        ...req.body,
         createdBy: {
           connect: {
             id: req.user.userId,

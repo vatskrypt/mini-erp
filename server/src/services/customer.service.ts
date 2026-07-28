@@ -1,5 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import prisma from "../config/prisma.js";
+import type { createCustomerInput } from "../validations/customer.validation.js";
 
 class CustomerService {
   async getAll() {
@@ -30,8 +31,24 @@ class CustomerService {
     });
   }
 
-  async create(data: Prisma.CustomerCreateInput) {
-    return prisma.customer.create({ data, });
+  async create(
+    data: createCustomerInput & {
+      createdBy: {
+        connect: {
+          id: string;
+        };
+      };
+    }
+  ) {
+    return prisma.customer.create({
+      data: {
+        ...data,
+        gstNumber: data.gstNumber ?? null,
+        address: data.address ?? null,
+        followUpDate: data.followUpDate ?? null,
+        notes: data.notes ?? null,
+      },
+    });
   }
 
   async update(
