@@ -1,0 +1,71 @@
+import type { NextFunction, Request, Response } from "express";
+import productService from "../services/product.service.js";
+
+interface ProductParams {
+  id: string;
+}
+
+class ProductController {
+  async create(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user!.userId;
+      const product = await productService.create(req.body, userId);
+
+      res.status(201).json({
+        success: true,
+        data: product,
+      });
+    }
+    catch (error) {
+      next(error);
+    }
+  }
+  async getAll(req: Request, res: Response, next: NextFunction) {
+    try {
+      const products = await productService.getAll();
+      res.json({
+        success: true,
+        data: products,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getById(req: Request<ProductParams>, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const product = await productService.getById(id);
+      res.json({
+        success: true,
+        data: product,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  async update(req: Request<ProductParams>, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const product = await productService.update(id, req.body);
+      res.json({
+        success: true,
+        data: product,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  async delete(req: Request<ProductParams>, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      await productService.delete(id);
+
+      res.json({
+        success: true,
+        message: "Product Deleted Successfully",
+      });
+    } catch (error) { next(error); }
+  }
+}
+
+export default new ProductController();
