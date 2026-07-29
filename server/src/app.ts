@@ -1,14 +1,14 @@
 import express from "express";
 import cors from "cors"
 import routes from "./routes/index.js";
+import productRoutes from "./routes/product.routes.js";
 
 const app = express();
 
 //middleware
 app.use(cors());
 app.use(express.json());
-app.use("/api/products", productRoutes);
-app.use("/api", routes);
+
 app.get("/", (_req, res) => {
   res.status(200).json({
     success: true,
@@ -16,10 +16,6 @@ app.get("/", (_req, res) => {
   });
 });
 
-// TODO: Register routes here
-// app.use("/auth", authRoutes);
-// app.use("/customers", customerRoutes);
-// app.use("/products", productRoutes);
-// app.use("/challans", challanRoutes);
+app.use("/api", routes);
 
 export default app;

@@ -24,4 +24,4 @@ export const updateCustomerSchema = createCustomerSchema.partial();
 
 export type createCustomerInput = z.infer<typeof createCustomerSchema>;
 
-export type updateCustomerSchema = z.infer<typeof updateCustomerSchema>;
+export type updateCustomerInput = z.infer<typeof updateCustomerSchema>;

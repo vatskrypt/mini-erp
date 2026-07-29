@@ -1,9 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import productService from "../services/product.service.js";
 
-interface ProductParams {
-  id: string;
-}
 
 class ProductController {
   async create(req: Request, res: Response, next: NextFunction) {
@@ -31,9 +28,9 @@ class ProductController {
       next(error);
     }
   }
-  async getById(req: Request<ProductParams>, res: Response, next: NextFunction) {
+  async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const product = await productService.getById(id);
       res.json({
         success: true,
@@ -43,9 +40,9 @@ class ProductController {
       next(error);
     }
   }
-  async update(req: Request<ProductParams>, res: Response, next: NextFunction) {
+  async update(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const product = await productService.update(id, req.body);
       res.json({
         success: true,
@@ -55,9 +52,9 @@ class ProductController {
       next(error);
     }
   }
-  async delete(req: Request<ProductParams>, res: Response, next: NextFunction) {
+  async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       await productService.delete(id);
 
       res.json({
