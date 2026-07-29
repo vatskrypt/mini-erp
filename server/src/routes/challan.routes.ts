@@ -1,0 +1,22 @@
+import { Router } from "express";
+import { Role } from "@prisma/client";
+
+import challanController from "../controllers/challan.controller.js";
+
+import { authMiddleware } from "../middleware/auth.middleware.js";
+import { validate } from "../middleware/validate.middleware.js";
+import { roleMiddleware } from "../middleware/auth.middleware.js";
+
+import { createChallanSchema } from "../validations/challan.validation.js";
+
+const router = Router();
+
+router.post(
+  "/",
+  authMiddleware,
+  roleMiddleware(Role.ADMIN),
+  validate(createChallanSchema),
+  challanController.create
+);
+
+export default router;

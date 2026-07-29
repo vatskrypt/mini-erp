@@ -1,17 +1,17 @@
-import dotenv from "dotenv";
+import "dotenv/config";
+import prisma from "./config/prisma.js";
 
-import { generateToken, verifyToken } from "./utils/jwt.js";
-dotenv.config();
-const token = generateToken({
-  id: "123",
-  email: "admin@test.com",
-  role: "ADMIN",
-});
+async function main() {
+  console.log(await prisma.customer.count());
 
-console.log("generated token: ");
-console.log(token);
+  await prisma.$transaction(async (tx) => {
+    console.log("inside");
+    await tx.customer.count();
+  });
 
-const payload = verifyToken(token);
+  console.log("done");
+}
 
-console.log("\ndecoded payload: ");
-console.log(payload);
+main()
+  .catch(console.error)
+  .finally(() => prisma.$disconnect());
