@@ -81,20 +81,37 @@ class DashboardService {
       )
       .slice(0, 10);
 
-    return {
-      summary: {
-        customers: customerCount,
-        products: productCount,
-        draftChallans: draftCount,
-        confirmedChallans: confirmedCount,
-        inventoryUnits: inventory._sum.currentStock ?? 0,
-        lowStockProducts: lowStock.length,
-      },
+    const dashboard = {
+          summary: {
+            customers: customerCount,
+            products: productCount,
+            draftChallans: draftCount,
+            confirmedChallans: confirmedCount,
+            inventoryUnits: inventory._sum.currentStock ?? 0,
+            lowStockProducts: lowStock.length,
+          },
 
-      recentChallans,
-      lowStock,
-      recentStockLogs,
-    };
+          recentChallans,
+
+          lowStock,
+
+          recentStockLogs,
+        };
+    return dashboard;
+    // return {
+    //   summary: {
+    //     customers: customerCount,
+    //     products: productCount,
+    //     draftChallans: draftCount,
+    //     confirmedChallans: confirmedCount,
+    //     inventoryUnits: inventory._sum.currentStock ?? 0,
+    //     lowStockProducts: lowStock.length,
+    //   },
+
+    //   recentChallans,
+    //   lowStock,
+    //   recentStockLogs,
+    // };
   }
 }
 
