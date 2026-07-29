@@ -153,8 +153,9 @@ model StockLog {
   quantity Int
 
   movementType StockMovementType
+  stockAfter Int
 
-  reason String?
+  remarks String?
 
   createdById String
   createdBy   User   @relation(fields: [createdById], references: [id])
@@ -162,6 +163,7 @@ model StockLog {
   createdAt DateTime @default(now())
 
   @@index([productId])
+  @@index([createdAt])
 }
 
 //
