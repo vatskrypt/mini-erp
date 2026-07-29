@@ -7,6 +7,7 @@ const app = express();
 //middleware
 app.use(cors());
 app.use(express.json());
+app.use("/api/products", productRoutes);
 app.use("/api", routes);
 app.get("/", (_req, res) => {
   res.status(200).json({
