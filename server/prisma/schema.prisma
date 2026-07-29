@@ -45,6 +45,13 @@ enum Role {
 //
 // USER
 //
+
+model Counter {
+name String @id
+value Int
+}
+
+
 model User {
   id       String @id @default(cuid())
   name     String
@@ -187,9 +194,12 @@ model Challan {
   items ChallanItem[]
 
   challanDate DateTime @default(now())
+  confirmedAt DateTime?
+  cancelledAt DateTime?
   updatedAt DateTime @updatedAt
 
   @@index([challanNumber])
+  @@index([status])
 }
 
 //

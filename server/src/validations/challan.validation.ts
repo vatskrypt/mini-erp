@@ -1,5 +1,14 @@
 import { z } from "zod";
+import { ChallanStatus } from "@prisma/client";
+import { string } from "zod/v3";
 
+export const challanQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().max(100).default(10),
+  search: z.string().trim().optional(),
+  status: z.enum(ChallanStatus).optional(),
+  customerId: z.string().cuid().optional(),
+});
 export const createChallanSchema = z
   .object({
     customerId: z.string().cuid(),
@@ -23,5 +32,11 @@ export const createChallanSchema = z
       path: ["items"],
     }
   );
+export const challanIdSchema = z.object({
+  id: string().cuid(),
+});
+
+export type ChallanIdInput = z.infer<typeof challanIdSchema>;
 
 export type CreateChallanInput = z.infer<typeof createChallanSchema>;
+export type ChallanQueryInput = z.infer<typeof challanQuerySchema>;

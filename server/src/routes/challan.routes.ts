@@ -19,4 +19,17 @@ router.post(
   challanController.create
 );
 
+router.get(
+  "/",
+  authMiddleware,
+  roleMiddleware(Role.ADMIN),
+  challanController.getAll
+);
+router.get(
+  "/:id",
+  authMiddleware,
+  roleMiddleware(Role.ADMIN),
+  challanController.getById
+);
+
 export default router;

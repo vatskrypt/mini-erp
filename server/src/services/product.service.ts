@@ -1,5 +1,6 @@
 
 
+import prisma from "../config/prisma.js";
 import type { CreateProductInput, UpdateProductInput } from "../validations/product.validation.js";
 
 // create()

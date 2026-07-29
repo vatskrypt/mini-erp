@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 
 import challanService from "../services/challan.service.js";
+import { challanIdSchema, challanQuerySchema } from "../validations/challan.validation.js";
 
 class ChallanController {
   async create(
@@ -25,6 +26,18 @@ class ChallanController {
       console.error(err);
       next(err);
     }
+  }
+  async getAll(req: Request, res: Response) {
+    const query = challanQuerySchema.parse(req.query);
+    const result = await challanService.getAll(query);
+    res.json(result);
+  }
+  async getById(req: Request, res: Response) {
+    const { id } = challanIdSchema.parse(req.params);
+
+    const challan = await challanService.getById(id);
+    res.json(challan);
+
   }
 }
 
