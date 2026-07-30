@@ -5,11 +5,13 @@ import ProductRow from "./ProductRow";
 interface ProductTableProps {
   products: Product[];
   onDelete: (id: string) => void;
+  onAdjustStock: (product: Product) => void;
 }
 
 export default function ProductTable({
   products,
   onDelete,
+  onAdjustStock,
 }: ProductTableProps) {
   return (
     <Panel>
@@ -43,6 +45,7 @@ export default function ProductTable({
                 key={product.id}
                 product={product}
                 onDelete={onDelete}
+                onAdjustStock={onAdjustStock}
               />
             ))
           )}

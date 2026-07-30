@@ -4,11 +4,13 @@ import type { Product } from "@/types/product";
 interface ProductRowProps {
   product: Product;
   onDelete: (id: string) => void;
+  onAdjustStock: (product: Product) => void;
 }
 
 export default function ProductRow({
   product,
   onDelete,
+  onAdjustStock,
 }: ProductRowProps) {
   const navigate = useNavigate();
 
@@ -40,6 +42,12 @@ export default function ProductRow({
       <td>{product.warehouse ?? "-"}</td>
 
       <td className="space-x-3">
+        <button
+          className="text-(--accent)"
+          onClick={() => onAdjustStock(product)}
+        >
+          Stock Update
+        </button>
         <button
           className="text-(--accent)"
           onClick={() =>

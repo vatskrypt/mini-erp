@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getProducts, deleteProduct } from "@/api/products";
 import type { Product } from "@/types/product";
 import ProductTable from "@/components/products/ProductTable";
-
+import AdjustStockDialog from "@/components/products/AdjustStockDialog";
 import { toast } from "sonner";
 
 export default function ProductsPage() {
@@ -12,6 +12,11 @@ export default function ProductsPage() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] =
+    useState<Product | null>(null);
+
+  const [stockDialogOpen, setStockDialogOpen] =
+    useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -74,7 +79,19 @@ export default function ProductsPage() {
       <ProductTable
         products={products}
         onDelete={handleDelete}
+        onAdjustStock={(product) => {
+          setSelectedProduct(product);
+          setStockDialogOpen(true);
+        }}
       />
+      {selectedProduct && (
+        <AdjustStockDialog
+          productId={selectedProduct.id}
+          open={stockDialogOpen}
+          onClose={() => setStockDialogOpen(false)}
+          onSuccess={fetchProducts}
+        />
+      )}
     </div>
   );
 }

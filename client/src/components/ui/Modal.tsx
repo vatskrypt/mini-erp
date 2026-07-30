@@ -12,10 +12,10 @@ export function Modal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/70">
-      <div className="w-125 border border-(--border) bg-(--surface) p-6">
-        {children}
-      </div>
-    </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="w-full max-w-md rounded-lg border border-(--border) bg-(--surface) p-6 shadow-xl">
+            {children}
+          </div>
+        </div>
   );
 }

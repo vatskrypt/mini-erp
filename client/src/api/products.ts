@@ -3,7 +3,7 @@ import type {
   Product,
   ProductFormData,
 } from "@/types/product";
-
+import type { AdjustStockData } from "@/types/stock";
 export async function getProducts(): Promise<Product[]> {
   const res = await api.get("/products");
   return res.data.data;
@@ -29,6 +29,11 @@ export async function updateProduct(
 ) {
   const res = await api.put(`/products/${id}`, data);
   return res.data.data;
+}
+export async function adjustStock(id: string,
+  data: AdjustStockData) {
+  const response = await api.patch(`/products/${id}/stock`, data);
+  return response.data.data;
 }
 
 export async function deleteProduct(id: string) {
