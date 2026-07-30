@@ -14,7 +14,7 @@ export const createCustomerSchema = z.object({
 
   address: z.string().trim().optional(),
 
-  followUpDate: z.coerce.date().optional(),
+  followUpDate: z.preprocess((value)=>value===""?undefined:value, z.coerce.date().optional()),
 
   notes: z.string().trim().optional(),
 
