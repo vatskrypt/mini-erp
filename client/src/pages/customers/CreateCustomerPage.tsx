@@ -4,6 +4,7 @@ import CustomerForm from "@/components/customers/CustomerForm";
 import type { CreateCustomerFormData } from "@/types/customer";
 import { useNavigate } from "react-router-dom";
 import { createCustomer } from "@/api/customers";
+import { toast } from "sonner";
 
 export default function CreateCustomerPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,11 +23,11 @@ export default function CreateCustomerPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   const handleSubmit = async () => {
-
+    setErrors({});
     try {
       setIsSubmitting(true);
       await createCustomer(form);
-      alert("Customer created successfully");
+      toast.success("Customer created successfully");
       navigate("/customers");
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -41,11 +42,11 @@ export default function CreateCustomerPage() {
           );
           setErrors(fieldErrors);
         } else {
-          alert("Failed to create customer");
+          toast.error("Failed to create customer");
         }
       } else {
         console.error(error);
-        alert("Something went wrong");
+        toast.error("Something went wrong");
       }
 
 

@@ -4,10 +4,12 @@ import CustomerRow from "./CustomerRow";
 
 interface CustomerTableProps {
   customers: Customer[];
+  onDelete: (id: string) => void;
 }
 
 export default function CustomerTable({
   customers,
+  onDelete,
 }: CustomerTableProps) {
   return (
     <Panel>
@@ -38,6 +40,7 @@ export default function CustomerTable({
               <CustomerRow
                 key={customer.id}
                 customer={customer}
+                onDelete={ onDelete}
               />
             ))
           )}

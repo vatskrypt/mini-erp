@@ -165,7 +165,7 @@ export default function CustomerForm({
 
         <div className="flex justify-end">
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting? "Saving...": "Create Customer"}
+            {isSubmitting? "Saving...": "Save"}
           </Button>
         </div>
       </form>

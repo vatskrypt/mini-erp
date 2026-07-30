@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 
-import { getCustomers } from "@/api/customers";
+import { deleteCustomer, getCustomers } from "@/api/customers";
 import type { Customer } from "@/types/customer";
 import CustomerTable from "@/components/customers/CustomerTable";
+import { toast } from "sonner";
+import { Button } from "@/components/ui";
+import { useNavigate } from "react-router-dom";
 
 export default function CustomersPage() {
+  const navigate = useNavigate();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -17,6 +21,28 @@ export default function CustomersPage() {
   if (loading) {
     return <p>Loading customers...</p>;
   }
+  const handleAddCustomer = () => {
+    navigate("/customers/new");
+  };
+
+  const handleDelete = async (id: string) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this customer?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteCustomer(id);
+      toast.success("Customer deleted successfully");
+      setCustomers(prev => prev.filter(customer => customer.id !== id));
+
+      // refresh list
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete customer");
+    }
+  };
 
   return (
     <div>
@@ -28,7 +54,11 @@ export default function CustomersPage() {
         Manage your customers
       </p>
 
-      <CustomerTable customers={customers} />
+      <CustomerTable customers={customers}
+        onDelete={handleDelete} />
+      <button onClick={handleAddCustomer}>
+        + Add Customer
+      </button>
     </div>
   );
 }

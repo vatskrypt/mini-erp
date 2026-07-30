@@ -7,9 +7,11 @@ import ProductListPage from "@/pages/products/ProductListPage";
 import ChallanListPage from "@/pages/challans/ChallanListPage";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
 
+
 import ProtectedRoute from "./ProtectedRoute";
 import Layout from "@/layouts/Layout";
 import CreateCustomerPage from "@/pages/customers/CreateCustomerPage";
+import EditCustomerPage from "@/pages/customers/EditCustomerPage";
 
 export default function AppRoutes() {
   return (
@@ -44,6 +46,10 @@ export default function AppRoutes() {
           <Route
             path="/customers/new"
             element={<CreateCustomerPage />}
+          />
+          <Route
+            path="/customers/:id/edit"
+            element={<EditCustomerPage />}
           />
         </Route>
       </Route>
