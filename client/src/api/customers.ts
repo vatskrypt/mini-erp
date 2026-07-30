@@ -10,7 +10,7 @@ interface ApiResponse<T> {
 }
 export async function getCustomers() {
   const response =
-    await api.get<ApiResponse<Customer>>("/customers");
+    await api.get<ApiResponse<Customer[]>>("/customers");
 
   return response.data.data;
 }

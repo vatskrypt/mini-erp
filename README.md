@@ -19,3 +19,6 @@ export const EMPTY_PRODUCT_FORM: ProductFormData = {
   warehouse: "",
 };
 const [form, setForm] = useState(EMPTY_PRODUCT_FORM);
+
+
+implement client/src/types/api.ts
