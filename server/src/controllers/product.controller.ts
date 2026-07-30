@@ -57,6 +57,12 @@ class ProductController {
       const id = req.params.id;
       const userId = req.user!.userId;
 
+      if (!id || Array.isArray(id)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid product id",
+        });
+      }
       const product = await productService.updateStock(
         id,
         req.body,

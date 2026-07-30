@@ -4,7 +4,7 @@ import { deleteCustomer, getCustomers } from "@/api/customers";
 import type { Customer } from "@/types/customer";
 import CustomerTable from "@/components/customers/CustomerTable";
 import { toast } from "sonner";
-import { Button } from "@/components/ui";
+
 import { useNavigate } from "react-router-dom";
 
 export default function CustomersPage() {

@@ -1,5 +1,5 @@
 
-import { type FormEvent, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button, Panel } from "@/components/ui";
@@ -45,14 +45,14 @@ export default function LoginPage() {
     setError("");
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setError("");
     setLoading(true);
 
     try {
-      const { token, user } = await login({
+      const { token } = await login({
         email,
         password,
       });

@@ -50,3 +50,15 @@ export interface ChallanFormData {
   customerId: string;
   items: ChallanFormItem[];
 }
+export interface ChallanListResponse {
+  success: boolean;
+  data: Challan[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export type CreateChallanInput = ChallanFormData;
