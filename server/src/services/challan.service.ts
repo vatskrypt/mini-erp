@@ -1,6 +1,6 @@
 console.log("Loaded challan.service", import.meta.url);
 import prisma from "../config/prisma.js";
-import type { ChallanQueryInput, CreateChallanInput } from "../validations/challan.validation.js";
+import type { ChallanQueryInput, CreateChallanInput, UpdateChallanInput } from "../validations/challan.validation.js";
 import { ChallanStatus, Prisma } from "@prisma/client";
 import { StockMovementType } from "@prisma/client";
 class ChallanService {
@@ -48,13 +48,18 @@ class ChallanService {
       );
       console.log("5");
       // Generate challan number
-      const counter = await tx.counter.update({
+      const counter = await tx.counter.upsert({
         where: {
-          name:"challan",
-        }, data: {
+          name: "challan",
+        },
+        update: {
           value: {
-            increment:1,
+            increment: 1,
           },
+        },
+        create: {
+          name: "challan",
+          value: 1,
         },
       });
 
@@ -96,19 +101,191 @@ class ChallanService {
         where: {
           id: challan.id,
         },
-        include: {
-          customer: true,
-          items: true,
-          createdBy: true,
+        select: {
+          id: true,
+          challanNumber: true,
+          status: true,
+          totalQuantity: true,
+          challanDate: true,
+          confirmedAt: true,
+          cancelledAt: true,
+          updatedAt: true,
+
+          customer: {
+            select: {
+              id: true,
+              name: true,
+              businessName: true,
+            },
+          },
+
+          items: {
+            select: {
+              id: true,
+              productId: true,
+              quantity: true,
+              productName: true,
+              productSKU: true,
+              unitPrice: true,
+              createdAt: true,
+            },
+          },
+
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              role: true,
+            },
+          },
         },
       });
     });
 
 
   }
+  async update(
+    id: string,
+    data: UpdateChallanInput
+  ) {
+    // Check challan exists
+    const challan = await prisma.challan.findUniqueOrThrow({
+      where: { id },
+    });
+
+    // Only drafts can be edited
+    if (challan.status !== ChallanStatus.DRAFT) {
+      throw new Error("Only draft challans can be edited.");
+    }
+
+    return prisma.$transaction(async (tx) => {
+      // Check customer exists
+      const customer = await tx.customer.findUniqueOrThrow({
+        where: {
+          id: data.customerId,
+        },
+      });
+
+      // Fetch products
+      const productIds = data.items.map((item) => item.productId);
+      const uniqueProductIds = [...new Set(productIds)];
+
+      // Defensive check (already validated in Zod)
+      if (productIds.length !== uniqueProductIds.length) {
+        throw new Error("Duplicate products are not allowed in a challan");
+      }
+
+      const products = await tx.product.findMany({
+        where: {
+          id: {
+            in: uniqueProductIds,
+          },
+        },
+      });
+
+      if (products.length !== uniqueProductIds.length) {
+        throw new Error("One or more products not found");
+      }
+
+      // Calculate total quantity
+      const totalQuantity = data.items.reduce(
+        (sum, item) => sum + item.quantity,
+        0
+      );
+
+      // Product lookup
+      const productMap = new Map(
+        products.map((product) => [product.id, product])
+      );
+
+      // Update challan
+      await tx.challan.update({
+        where: {
+          id,
+        },
+        data: {
+          customerId: customer.id,
+          totalQuantity,
+        },
+      });
+
+      // Remove old items
+      await tx.challanItem.deleteMany({
+        where: {
+          challanId: id,
+        },
+      });
+
+      // Create new items
+      await tx.challanItem.createMany({
+        data: data.items.map((item) => {
+          const product = productMap.get(item.productId)!;
+
+          return {
+            challanId: id,
+            productId: product.id,
+            quantity: item.quantity,
+            productName: product.name,
+            productSKU: product.sku,
+            unitPrice: product.unitPrice,
+          };
+        }),
+      });
+
+      // Return updated challan
+      return tx.challan.findUniqueOrThrow({
+        where: {
+          id,
+        },
+        select: {
+          id: true,
+          challanNumber: true,
+          status: true,
+          totalQuantity: true,
+          challanDate: true,
+          confirmedAt: true,
+          cancelledAt: true,
+          updatedAt: true,
+
+          customer: {
+            select: {
+              id: true,
+              name: true,
+              businessName: true,
+            },
+          },
+
+          items: {
+            select: {
+              id: true,
+              productId: true,
+              quantity: true,
+              productName: true,
+              productSKU: true,
+              unitPrice: true,
+              createdAt: true,
+            },
+            orderBy: {
+              createdAt: "asc",
+            },
+          },
+
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              role: true,
+            },
+          },
+        },
+      });
+    });
+  }
   async confirm(challanId: string, userId: string) {
     return prisma.$transaction(async (tx) => {
-      const challan = await tx.challan.findUnique({
+      const challan = await tx.challan.findUniqueOrThrow({
         where: {
           id: challanId,
         },
@@ -118,10 +295,6 @@ class ChallanService {
           createdBy: true,
         },
       });
-
-      if (!challan) {
-        throw new Error("Challan not found");
-      }
 
       if (challan.status !== ChallanStatus.DRAFT) {
         throw new Error("Only draft challans can be confirmed");
@@ -211,6 +384,7 @@ class ChallanService {
         },
         data: {
           status: ChallanStatus.CONFIRMED,
+          confirmedAt: new Date(),
         },
       });
 
@@ -220,7 +394,11 @@ class ChallanService {
         },
         include: {
           customer: true,
-          createdBy: true,
+          createdBy: {
+            select: {
+              name:true,
+            }
+          },
           items: true,
         },
       });
@@ -283,7 +461,6 @@ class ChallanService {
           },
           createdBy: {
             select: {
-              id: true,
               name: true,
             },
           },
@@ -342,7 +519,31 @@ class ChallanService {
     const totalAmount = challan.items.reduce((sum, item) => sum + Number(item.unitPrice) * item.quantity, 0);
     return {...challan, totalAmount};
   }
+  async delete(id:string) {
+    return prisma.$transaction(async (tx) => {
+        const challan = await tx.challan.findUniqueOrThrow({
+            where: { id },
+        });
 
+        if (challan.status !== ChallanStatus.DRAFT) {
+            throw new Error(
+                "Only draft challans can be deleted."
+            );
+        }
+
+        await tx.challanItem.deleteMany({
+            where: {
+                challanId: id,
+            },
+        });
+
+        await tx.challan.delete({
+            where: {
+                id,
+            },
+        });
+    });
+}
 }
 
 export default new ChallanService();

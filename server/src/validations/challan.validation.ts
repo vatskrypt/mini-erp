@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ChallanStatus } from "@prisma/client";
-import { string } from "zod/v3";
+
 
 export const challanQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
@@ -33,10 +33,14 @@ export const createChallanSchema = z
     }
   );
 export const challanIdSchema = z.object({
-  id: string().cuid(),
+  id: z.string().cuid(),
 });
 
 export type ChallanIdInput = z.infer<typeof challanIdSchema>;
 
 export type CreateChallanInput = z.infer<typeof createChallanSchema>;
 export type ChallanQueryInput = z.infer<typeof challanQuerySchema>;
+
+export type UpdateChallanInput = CreateChallanInput;
+
+export const updateChallanSchema = createChallanSchema;

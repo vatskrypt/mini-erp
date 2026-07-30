@@ -31,5 +31,15 @@ router.get(
   roleMiddleware(Role.ADMIN),
   challanController.getById
 );
+router.put(
+  "/:id",
+  authMiddleware,
+  roleMiddleware(Role.ADMIN),
+  challanController.update
+);
+router.delete("/:id", authMiddleware, roleMiddleware(Role.ADMIN),
+  challanController.delete);
+router.patch("/:id", authMiddleware, roleMiddleware(Role.ADMIN),
+  challanController.confirm);
 
 export default router;
