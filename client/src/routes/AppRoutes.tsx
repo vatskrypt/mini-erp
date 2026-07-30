@@ -3,7 +3,6 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import LoginPage from "@/pages/auth/LoginPage";
 
 import CustomersPage from "@/pages/customers/CustomersPage";
-import ProductListPage from "@/pages/products/ProductListPage";
 import ChallanListPage from "@/pages/challans/ChallanListPage";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
 
@@ -12,6 +11,9 @@ import ProtectedRoute from "./ProtectedRoute";
 import Layout from "@/layouts/Layout";
 import CreateCustomerPage from "@/pages/customers/CreateCustomerPage";
 import EditCustomerPage from "@/pages/customers/EditCustomerPage";
+import CreateProductPage from "@/pages/products/CreateProductPage";
+import ProductsPage from "@/pages/products/ProductsPage";
+import EditProductPage from "@/pages/products/EditProductPage";
 
 export default function AppRoutes() {
   return (
@@ -36,7 +38,16 @@ export default function AppRoutes() {
 
           <Route
             path="/products"
-            element={<ProductListPage />}
+            element={<ProductsPage />}
+          />
+          <Route
+              path="/products/new"
+              element={<CreateProductPage />}
+          />
+
+          <Route
+              path="/products/:id/edit"
+              element={<EditProductPage />}
           />
 
           <Route

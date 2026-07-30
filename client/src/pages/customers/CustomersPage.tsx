@@ -44,21 +44,32 @@ export default function CustomersPage() {
     }
   };
 
+
   return (
     <div>
-      <h1 className="text-3xl font-bold">
-        Customers
-      </h1>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">
+            Customers
+          </h1>
 
-      <p className="mt-2 text-(--muted)">
-        Manage your customers
-      </p>
+          <p className="mt-2 text-(--muted)">
+            Manage your customers
+          </p>
+        </div>
 
-      <CustomerTable customers={customers}
-        onDelete={handleDelete} />
-      <button onClick={handleAddCustomer}>
-        + Add Customer
-      </button>
+        <button
+          className="rounded-lg bg-(--accent) px-4 py-2 text-white"
+          onClick={handleAddCustomer}
+        >
+          + Add Customer
+        </button>
+      </div>
+
+      <CustomerTable
+        customers={customers}
+        onDelete={handleDelete}
+      />
     </div>
   );
 }
