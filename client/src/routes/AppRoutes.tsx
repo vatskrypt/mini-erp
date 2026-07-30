@@ -2,13 +2,14 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import LoginPage from "@/pages/auth/LoginPage";
 
-import CustomerListPage from "@/pages/customers/CustomerListPage";
+import CustomersPage from "@/pages/customers/CustomersPage";
 import ProductListPage from "@/pages/products/ProductListPage";
 import ChallanListPage from "@/pages/challans/ChallanListPage";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
 
 import ProtectedRoute from "./ProtectedRoute";
 import Layout from "@/layouts/Layout";
+import CreateCustomerPage from "@/pages/customers/CreateCustomerPage";
 
 export default function AppRoutes() {
   return (
@@ -28,7 +29,7 @@ export default function AppRoutes() {
 
           <Route
             path="/customers"
-            element={<CustomerListPage />}
+            element={<CustomersPage />}
           />
 
           <Route
@@ -39,6 +40,10 @@ export default function AppRoutes() {
           <Route
             path="/challans"
             element={<ChallanListPage />}
+          />
+          <Route
+            path="/customers/new"
+            element={<CreateCustomerPage />}
           />
         </Route>
       </Route>
