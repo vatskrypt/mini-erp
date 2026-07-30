@@ -4,6 +4,7 @@ import { validate } from "../middleware/validate.middleware.js";
 import { createProductSchema, updateProductSchema } from "../validations/product.validation.js";
 import { Router } from "express";
 import productController from "../controllers/product.controller.js";
+import { adjustStockSchema } from "../validations/stock.validation.js";
 
 const router = Router();
 
@@ -34,6 +35,9 @@ router.put(
     validate(updateProductSchema),
     productController.update
 );
+router.patch("/:id/stock",
+  authMiddleware,
+  roleMiddleware(Role.ADMIN), validate(adjustStockSchema),productController.updateProductStock);
 
 router.delete(
     "/:id",

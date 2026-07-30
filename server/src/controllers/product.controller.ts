@@ -52,6 +52,25 @@ class ProductController {
       next(error);
     }
   }
+  async updateProductStock(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.params.id;
+      const userId = req.user!.userId;
+
+      const product = await productService.updateStock(
+        id,
+        req.body,
+        userId
+      );
+
+      res.json({
+        success: true,
+        data: product,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.params.id as string;

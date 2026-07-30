@@ -2,6 +2,8 @@
 
 import prisma from "../config/prisma.js";
 import type { CreateProductInput, UpdateProductInput } from "../validations/product.validation.js";
+import type { AdjustStockInput } from "../validations/stock.validation.js";
+
 
 // create()
 // getAll()
@@ -57,6 +59,47 @@ class ProductService {
         id,
       },
       data: cleanedData,
+    });
+  }
+  async updateStock(productId: string,
+    data: AdjustStockInput,
+    userId:string) {
+    const product = await prisma.product.findUniqueOrThrow({
+      where: {
+        id: productId,
+      },
+    });
+    let newStock = product.currentStock;
+
+    if (data.movementType === "IN") {
+      newStock += data.quantity;
+    } else {
+      newStock -= data.quantity;
+    }
+    if (newStock < 0) {
+      throw new Error("Insufficient Stock");
+    }
+    return prisma.$transaction(async(tx) => {
+      const updatedProduct = await tx.product.update({
+        where: {
+          id: productId,
+        },
+        data: {
+          currentStock: newStock,
+        },
+      });
+
+      await tx.stockLog.create({
+        data: {
+          productId,
+          quantity: data.quantity,
+          movementType: data.movementType,
+          stockAfter: newStock,
+          remarks: data.remarks ?? null,
+          createdById: userId,
+        },
+      });
+      return updatedProduct;
     });
   }
   async delete(id: string) {
