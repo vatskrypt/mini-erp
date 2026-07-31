@@ -20,7 +20,7 @@ class StockService {
       }
 
       const newStock =
-        data.type === StockMovementType.IN
+        data.movementType === StockMovementType.IN
           ? product.currentStock + data.quantity
           : product.currentStock - data.quantity;
 
@@ -42,7 +42,7 @@ class StockService {
           productId: product.id,
           createdById,
           quantity: data.quantity,
-          movementType: data.type,
+          movementType: data.movementType,
           stockAfter: newStock,
           remarks: data.remarks ?? null,
         },

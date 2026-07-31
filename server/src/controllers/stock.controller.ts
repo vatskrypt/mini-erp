@@ -1,10 +1,10 @@
+import { success } from "zod/mini";
 import stockService from "../services/stock.service.js";
 import type { Request,Response, NextFunction } from "express";
 class StockController {
 
   async adjust(req: Request, res:Response, next:NextFunction) {
     try {
-
       const log =
         await stockService.adjustStock(
           req.body,
