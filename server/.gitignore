@@ -6,11 +6,7 @@ node_modules
 dist/
 node_modules/
 
-# TypeScript build output
-src/**/*.js
-src/**/*.js.map
-src/**/*.d.ts
-src/**/*.d.ts.map
+
 
 prisma/seed.js
 prisma/seed.js.map
