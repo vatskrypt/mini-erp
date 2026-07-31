@@ -3,3 +3,16 @@ node_modules
 .env
 
 /generated/prisma
+dist/
+node_modules/
+
+# TypeScript build output
+src/**/*.js
+src/**/*.js.map
+src/**/*.d.ts
+src/**/*.d.ts.map
+
+prisma/seed.js
+prisma/seed.js.map
+prisma/seed.d.ts
+prisma/seed.d.ts.map
