@@ -12,6 +12,7 @@ const router = Router();
 // Everyone who is logged in can view customers
 
 router.get("/", authMiddleware, customerController.getAll);
+
 router.get("/:id", authMiddleware, customerController.getById);
 
 router.post("/", authMiddleware, roleMiddleware(Role.ADMIN, Role.SALES),validate(createCustomerSchema), customerController.create);
