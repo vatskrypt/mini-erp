@@ -4,6 +4,88 @@ import type { ChallanQueryInput, CreateChallanInput, UpdateChallanInput } from "
 import { ChallanStatus, Prisma } from "@prisma/client";
 import { StockMovementType } from "@prisma/client";
 class ChallanService {
+  async getAll(query: ChallanQueryInput) {
+    const {
+      page,
+      limit,
+      search,
+      status,
+      customerId,
+    } = query;
+
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.ChallanWhereInput = {};
+
+    if (status) {
+      where.status = status;
+    }
+
+    if (customerId) {
+      where.customerId = customerId;
+    }
+
+    if (search) {
+      where.OR = [
+        {
+          challanNumber: {
+            contains: search,
+            mode: Prisma.QueryMode.insensitive,
+          },
+        },
+        {
+          customer: {
+            name: {
+              contains: search,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+        },
+      ];
+    }
+
+    const [challans, total] = await prisma.$transaction([
+      prisma.challan.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: {
+          challanDate: "desc",
+        },
+        include: {
+          customer: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          createdBy: {
+            select: {
+              name: true,
+            },
+          },
+          _count: {
+            select: {
+              items: true,
+            },
+          },
+        },
+      }),
+      prisma.challan.count({
+        where,
+      }),
+    ]);
+
+    return {
+      data: challans,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
+      },
+    };
+  }
   async create(
     data: CreateChallanInput,
     createdById: string
@@ -404,88 +486,7 @@ class ChallanService {
       });
     });
   }
-  async getAll(query: ChallanQueryInput) {
-    const {
-      page,
-      limit,
-      search,
-      status,
-      customerId,
-    } = query;
 
-    const skip = (page - 1) * limit;
-
-    const where: Prisma.ChallanWhereInput = {};
-
-    if (status) {
-      where.status = status;
-    }
-
-    if (customerId) {
-      where.customerId = customerId;
-    }
-
-    if (search) {
-      where.OR = [
-        {
-          challanNumber: {
-            contains: search,
-            mode: Prisma.QueryMode.insensitive,
-          },
-        },
-        {
-          customer: {
-            name: {
-              contains: search,
-              mode: Prisma.QueryMode.insensitive,
-            },
-          },
-        },
-      ];
-    }
-
-    const [challans, total] = await prisma.$transaction([
-      prisma.challan.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: {
-          challanDate: "desc",
-        },
-        include: {
-          customer: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          createdBy: {
-            select: {
-              name: true,
-            },
-          },
-          _count: {
-            select: {
-              items: true,
-            },
-          },
-        },
-      }),
-      prisma.challan.count({
-        where,
-      }),
-    ]);
-
-    return {
-      data: challans,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit),
-      },
-    };
-  }
   async getById(challanId: string) {
     const challan = await prisma.challan.findUniqueOrThrow({
       where: {
