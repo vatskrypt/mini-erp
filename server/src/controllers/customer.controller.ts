@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 
 import customerService from "../services/customer.service.js";
+import { customerQuerySchema } from "../validations/customer.validation.js";
 
 
 type CustomerParams = {
@@ -12,8 +13,9 @@ class CustomerController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    const query = customerQuerySchema.parse(req.query);
     try {
-      const customers = await customerService.getAll();
+      const customers = await customerService.getAll(query);
 
       res.status(200).json({
         success: true,

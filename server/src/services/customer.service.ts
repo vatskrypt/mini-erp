@@ -1,23 +1,48 @@
-import type { Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import prisma from "../config/prisma.js";
-import type { createCustomerInput } from "../validations/customer.validation.js";
+import type { createCustomerInput, CustomerQueryInput } from "../validations/customer.validation.js";
 
 class CustomerService {
-  async getAll() {
-    return prisma.customer.findMany({
-      include: {
-        createdBy: {
-          select: {
-            id: true,
-            name: true,
-            email:true,
-          },
+  async getAll(query: CustomerQueryInput) {
+    const { page, limit, search } = query;
+    const skip = (page - 1) * limit;
+    const where: Prisma.CustomerWhereInput = {};
+    if (search) {
+      where.OR = [{
+        name: {
+          contains: search,
+          mode: Prisma.QueryMode.insensitive,
+        },
+      }, {
+        businessName: {
+          contains: search,
+          mode: Prisma.QueryMode.insensitive,
         },
       },
-      orderBy: {
-        createdAt: "desc",
+      ];
+    }
+    const [customers, total] = await prisma.$transaction([
+      prisma.customer.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+      prisma.customer.count({
+        where,
+      }),
+    ]);
+    return {
+      data: customers,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
       },
-    });
+    };
   }
 
   async getById(id: string) {

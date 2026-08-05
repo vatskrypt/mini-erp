@@ -1,6 +1,11 @@
 import { z } from "zod";
 import { CustomerStatus, CustomerType } from "@prisma/client";
 
+export const customerQuerySchema = z.object({
+  page:z.coerce.number(),
+  limit:z.coerce.number().max(100).default(20),
+  search:z.string().optional(),
+})
 
 export const createCustomerSchema = z.object({
   name: z.string().trim().min(3).max(100),
@@ -21,6 +26,8 @@ export const createCustomerSchema = z.object({
 });
 
 export const updateCustomerSchema = createCustomerSchema.partial();
+
+export type CustomerQueryInput = z.infer<typeof customerQuerySchema>;
 
 export type createCustomerInput = z.infer<typeof createCustomerSchema>;
 
