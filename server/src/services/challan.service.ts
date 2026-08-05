@@ -49,18 +49,14 @@ class ChallanService {
         where,
         skip,
         take: limit,
-        orderBy: {
-          challanDate: "desc",
-        },
-        include: {
+        select: {
+          id: true,
+          challanNumber: true,
+          challanDate: true,
+          status: true,
           customer: {
             select: {
               id: true,
-              name: true,
-            },
-          },
-          createdBy: {
-            select: {
               name: true,
             },
           },
