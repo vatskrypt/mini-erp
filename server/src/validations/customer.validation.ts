@@ -2,7 +2,7 @@ import { z } from "zod";
 import { CustomerStatus, CustomerType } from "@prisma/client";
 
 export const customerQuerySchema = z.object({
-  page:z.coerce.number(),
+  page:z.coerce.number().default(1),
   limit:z.coerce.number().max(100).default(20),
   search:z.string().optional(),
 })

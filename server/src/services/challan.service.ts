@@ -54,15 +54,11 @@ class ChallanService {
           challanNumber: true,
           challanDate: true,
           status: true,
+          totalQuantity: true,
           customer: {
             select: {
               id: true,
               name: true,
-            },
-          },
-          _count: {
-            select: {
-              items: true,
             },
           },
         },
