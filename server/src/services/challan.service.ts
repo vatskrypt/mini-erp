@@ -497,6 +497,7 @@ class ChallanService {
           select: {
             id: true,
             name: true,
+            businessName: true,
           }
         },
         items: {
