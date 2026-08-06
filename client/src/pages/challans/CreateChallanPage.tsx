@@ -28,7 +28,7 @@ export default function CreateChallanPage() {
             getProducts(),
           ]);
 
-        setCustomers(customerRes);
+        setCustomers(customerRes.data);
         setProducts(productRes);
       } finally {
         setLoading(false);

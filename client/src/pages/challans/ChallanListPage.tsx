@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getChallans } from "../../api/challan";
 import ChallanTable from "../../components/challans/ChallanTable";
-import type { Challan } from "../../types/challan";
-import { Button } from "@/components/ui/Button";
+import type { ChallanListItem } from "../../types/challan";
+
 
 export default function ChallanListPage() {
-  const [challans, setChallans] = useState<Challan[]>([]);
+  const [challans, setChallans] = useState<ChallanListItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
@@ -33,11 +33,11 @@ export default function ChallanListPage() {
       <h1 className="text-2xl font-bold">
         Challans
       </h1>
-      <Button
+      <button
           onClick={() => navigate("/challans/new")}
       >
           Create Challan
-      </Button>
+      </button>
 
       <ChallanTable
         challans={challans}
