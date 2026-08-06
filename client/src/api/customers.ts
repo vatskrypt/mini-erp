@@ -2,15 +2,19 @@ import api from "./axios";
 import type {
   Customer,
   CreateCustomerFormData,
+  CustomerListResponse,
+  CustomerQuery,
 } from "@/types/customer";
 
 interface ApiResponse<T> {
   success: boolean;
   data: T;
 }
-export async function getCustomers() {
+export async function getCustomers(query: CustomerQuery = {}): Promise<CustomerListResponse> {
   const response =
-    await api.get<ApiResponse<Customer[]>>("/customers");
+    await api.get<ApiResponse<CustomerListResponse>>("/customers", {
+      params: query,
+    });
 
   return response.data.data;
 }

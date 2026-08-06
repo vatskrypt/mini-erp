@@ -1,5 +1,5 @@
 import api from "./axios";
-import type { Challan, ChallanListResponse, CreateChallanInput } from "../types/challan";
+import type { ChallanDetails, ChallanListItem, ChallanListResponse, CreateChallanInput } from "../types/challan";
 
 export async function getChallans(params?: {
   page?: number;
@@ -18,11 +18,10 @@ export async function getChallans(params?: {
   return data;
 }
 
-export async function getChallan(id: string) {
-  const { data } = await api.get<{
-    success: boolean;
-    data: Challan;
-  }>(`/challans/${id}`);
+export async function getChallan(id: string): Promise<ChallanDetails> {
+  const { data } = await api.get<ChallanDetails>(
+    `/challans/${id}`
+  );
 
   return data;
 }
@@ -33,7 +32,7 @@ export async function createChallan(
   const { data } = await api.post<{
     success: boolean;
     message: string;
-    data: Challan;
+    data: ChallanListItem;
   }>("/challans", payload);
 
   return data;
@@ -46,7 +45,7 @@ export async function updateChallan(
   const { data } = await api.put<{
     success: boolean;
     message: string;
-    data: Challan;
+    data: ChallanListItem;
   }>(`/challans/${id}`, payload);
 
   return data;
@@ -56,7 +55,7 @@ export async function confirmChallan(id: string) {
   const { data } = await api.patch<{
     success: boolean;
     message: string;
-    data: Challan;
+    data: ChallanListItem;
   }>(`/challans/${id}/confirm`);
 
   return data;
