@@ -516,6 +516,7 @@ class ChallanService {
           select: {
             id: true,
             name: true,
+            role: true,
           },
         },
         confirmedAt: true,
