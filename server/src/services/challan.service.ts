@@ -487,17 +487,29 @@ class ChallanService {
     const challan = await prisma.challan.findUniqueOrThrow({
       where: {
      id: challanId,
-      },
-      include: {
+      }, select: {
+        id: true,
+        challanNumber: true,
+        challanDate: true,
+        status: true,
+        totalQuantity: true,
         customer: {
           select: {
             id: true,
             name: true,
-            mobile: true,
-            email: true,
-            address: true,
-            gstNumber: true,
+          }
+        },
+        items: {
+          select: {
+            id: true,
+            productName: true,
+            productSKU: true,
+            quantity: true,
+            unitPrice: true,
           },
+          orderBy: {
+            createdAt: "asc",
+          }
         },
         createdBy: {
           select: {
@@ -505,12 +517,11 @@ class ChallanService {
             name: true,
           },
         },
-        items: {
-          orderBy: {
-            createdAt: "asc",
-          },
-        },
+        confirmedAt: true,
+        cancelledAt: true,
+        updatedAt: true,
       }
+
     })
 
     const totalAmount = challan.items.reduce((sum, item) => sum + Number(item.unitPrice) * item.quantity, 0);
