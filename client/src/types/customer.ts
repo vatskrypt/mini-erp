@@ -30,3 +30,18 @@ export interface CreateCustomerFormData {
   followUpDate?: string;
   notes?: string;
 }
+export interface CustomerListResponse {
+  data: Customer[];
+
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
+  };
+}
+export interface CustomerQuery{
+  page ?: number;
+  limit ?: number;
+  search ?: string;
+}
