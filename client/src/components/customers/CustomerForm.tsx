@@ -47,8 +47,10 @@ export default function CustomerForm({
         <Section title="Basic Information">
           <div className="grid gap-4 md:grid-cols-2">
             <Input
-            disabled={isSubmitting}
-              placeholder="Customer Name"
+              label="Customer Name"
+              required
+              disabled={isSubmitting}
+              placeholder="Enter customer name"
               value={value.name}
               error={ errors.name}
               onChange={(e) =>
@@ -57,8 +59,10 @@ export default function CustomerForm({
             />
 
             <Input
+              label="Business Name"
+              required
             disabled={isSubmitting}
-              placeholder="Business Name"
+              placeholder="Enter business name"
               value={value.businessName}
               error={errors.businessName}
               onChange={(e) =>
@@ -70,8 +74,10 @@ export default function CustomerForm({
             />
 
             <Input
+              label="Mobile"
+              required
             disabled={isSubmitting}
-              placeholder="Mobile"
+              placeholder="Enter mobile"
               value={value.mobile}
               error={errors.mobile}
               onChange={(e) =>
@@ -83,8 +89,10 @@ export default function CustomerForm({
             />
 
             <Input
+              label="Email Id"
+              required
             disabled={isSubmitting}
-              placeholder="Email"
+              placeholder="Enter email id"
               type="email"
               value={value.email}
               error={ errors.email}

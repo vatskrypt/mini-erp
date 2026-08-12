@@ -50,10 +50,11 @@ export default function ProductForm({
         <Section title="Product Information">
           <div className="grid gap-4 md:grid-cols-2">
             <Input
+            required
               id="product-name"
               label="Product Name"
               name="name"
-              placeholder="Product Name"
+              placeholder="Enter product Name"
               value={form.name}
               onChange={handleChange}
               disabled={isSubmitting}
@@ -62,10 +63,11 @@ export default function ProductForm({
             />
 
             <Input
+            required
               id="product-sku"
               label="SKU"
               name="sku"
-              placeholder="SKU"
+              placeholder="enter product SKU"
               value={form.sku}
               onChange={handleChange}
               disabled={isSubmitting}
@@ -74,10 +76,11 @@ export default function ProductForm({
             />
 
             <Input
+            required
               id="product-category"
               label="Category"
               name="category"
-              placeholder="Category"
+              placeholder="Enter category"
               value={form.category}
               onChange={handleChange}
               disabled={isSubmitting}
@@ -86,13 +89,14 @@ export default function ProductForm({
             />
 
             <Input
+            required
               id="unit-price"
               label="Unit Price"
               name="unitPrice"
               type="number"
               min="0"
               step="0.01"
-              placeholder="Unit Price"
+              placeholder="Enter unit price"
               value={form.unitPrice}
               onChange={handleChange}
               disabled={isSubmitting}

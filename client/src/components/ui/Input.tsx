@@ -15,6 +15,7 @@ export default function Input({
   className = "",
   error,
   label,
+  required,
   ...props
 }: InputProps) {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,10 +29,13 @@ export default function Input({
 
   return (
     <div className="space-y-1">
-      {label && ( <label className="text-sm uppercase text-(--muted)"> {label} </label> )}
+      {label && (<label className="text-sm uppercase text"> {label} {required && (
+        <span className="ml-1 text-red-500">*</span>
+      ) } </label> )}
       <div className="relative">
         <input
           {...props}
+          required={required}
           type={inputType}
           className={`w-full border border-(--border) bg-transparent px-3 py-2 outline-none focus:border-(--accent)
           ${showPasswordToggle ? "pr-16" : ""}
