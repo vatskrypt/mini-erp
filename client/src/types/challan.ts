@@ -24,6 +24,7 @@ export interface ChallanUser {
 
 export interface ChallanItem {
   id: string;
+  productId: string;
   productName: string;
   productSKU: string;
   quantity: number;
