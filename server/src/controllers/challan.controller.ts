@@ -10,20 +10,15 @@ class ChallanController {
     next: NextFunction
   ) {
     try {
-      console.log("controller reached");
-      console.log(req.body);
-      console.log(req.user);
       const challan = await challanService.create(
         req.body,
         req.user!.userId
       );
-      console.log("controller end");
       res.status(201).json({
         success: true,
         data: challan,
       });
     } catch (err) {
-      console.error(err);
       next(err);
     }
   }
