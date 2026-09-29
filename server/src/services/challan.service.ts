@@ -1,9 +1,10 @@
-console.log("Loaded challan.service", import.meta.url);
 import prisma from "../config/prisma.js";
 import type { ChallanQueryInput, CreateChallanInput, UpdateChallanInput } from "../validations/challan.validation.js";
 import { ChallanStatus, Prisma } from "@prisma/client";
 import { StockMovementType } from "@prisma/client";
-class ChallanService {
+export class ChallanService {
+  constructor(private readonly db: typeof prisma = prisma) {}
+
   async getAll(query: ChallanQueryInput) {
     const {
       page,
@@ -44,8 +45,8 @@ class ChallanService {
       ];
     }
 
-    const [challans, total] = await prisma.$transaction([
-      prisma.challan.findMany({
+    const [challans, total] = await this.db.$transaction([
+      this.db.challan.findMany({
         where,
         skip,
         take: limit,
@@ -63,7 +64,7 @@ class ChallanService {
           },
         },
       }),
-      prisma.challan.count({
+      this.db.challan.count({
         where,
       }),
     ]);
@@ -82,27 +83,20 @@ class ChallanService {
     data: CreateChallanInput,
     createdById: string
   ) {
-    // fix prevent duplicate productIds from being added to a challan in challan.service.ts
-    console.log("Service version: 1");
-
-
-    return prisma.$transaction(async (tx) => {
+    return this.db.$transaction(async (tx) => {
       // Check customer
-      console.log(" (1) Transaction Entered");
       const customer = await tx.customer.findUniqueOrThrow({
         where: {
           id: data.customerId,
         },
       });
 
-      console.log("2");
       // Fetch products
       const productIds = data.items.map((item) => item.productId);
       const uniqueProductIds = [...new Set(productIds)];
       if (productIds.length !== uniqueProductIds.length) {
         throw new Error("Duplicate products are not allowed in a challan");
       }
-      console.log("3");
       const products = await tx.product.findMany({
         where: {
           id: {
@@ -110,7 +104,6 @@ class ChallanService {
           },
         },
       });
-      console.log("4");
       if (products.length !== uniqueProductIds.length) {
         throw new Error("One or more products not found");
       }
@@ -120,7 +113,6 @@ class ChallanService {
         (sum, item) => sum + item.quantity,
         0
       );
-      console.log("5");
       // Generate challan number
       const counter = await tx.counter.upsert({
         where: {
@@ -148,12 +140,10 @@ class ChallanService {
           totalQuantity,
         },
       });
-      console.log("6");
       // Product lookup
       const productMap = new Map(
         products.map((product) => [product.id, product])
       );
-      console.log("7");
       // Create challan items
       await tx.challanItem.createMany({
         data: data.items.map((item) => {
@@ -169,7 +159,6 @@ class ChallanService {
           };
         }),
       });
-      console.log("8");
       // Return created challan
       return tx.challan.findUniqueOrThrow({
         where: {
@@ -224,7 +213,7 @@ class ChallanService {
     data: UpdateChallanInput
   ) {
     // Check challan exists
-    const challan = await prisma.challan.findUniqueOrThrow({
+    const challan = await this.db.challan.findUniqueOrThrow({
       where: { id },
     });
 
@@ -233,7 +222,7 @@ class ChallanService {
       throw new Error("Only draft challans can be edited.");
     }
 
-    return prisma.$transaction(async (tx) => {
+    return this.db.$transaction(async (tx) => {
       // Check customer exists
       const customer = await tx.customer.findUniqueOrThrow({
         where: {
@@ -358,7 +347,7 @@ class ChallanService {
     });
   }
   async confirm(challanId: string, userId: string) {
-    return prisma.$transaction(async (tx) => {
+    return this.db.$transaction(async (tx) => {
       const challan = await tx.challan.findUniqueOrThrow({
         where: {
           id: challanId,
@@ -480,7 +469,7 @@ class ChallanService {
   }
 
   async getById(challanId: string) {
-    const challan = await prisma.challan.findUniqueOrThrow({
+    const challan = await this.db.challan.findUniqueOrThrow({
       where: {
      id: challanId,
       }, select: {
@@ -498,8 +487,9 @@ class ChallanService {
         },
         items: {
           select: {
-            id: true,
-            productName: true,
+          id: true,
+          productId: true,
+          productName: true,
             productSKU: true,
             quantity: true,
             unitPrice: true,
@@ -526,7 +516,7 @@ class ChallanService {
     return {...challan, totalAmount};
   }
   async delete(id:string) {
-    return prisma.$transaction(async (tx) => {
+    return this.db.$transaction(async (tx) => {
         const challan = await tx.challan.findUniqueOrThrow({
             where: { id },
         });

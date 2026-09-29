@@ -2,12 +2,14 @@ import { StockMovementType } from "@prisma/client";
 import  prisma  from "../config/prisma.js";
 import { type AdjustStockInput } from "../validations/stock.validation.js";
 
-class StockService {
+export class StockService {
+  constructor(private readonly db: typeof prisma = prisma) {}
+
   async adjustStock(
     data: AdjustStockInput,
     createdById: string
   ) {
-    return prisma.$transaction(async (tx) => {
+    return this.db.$transaction(async (tx) => {
 
       const product = await tx.product.findUnique({
         where: {
@@ -53,7 +55,7 @@ class StockService {
   }
 
   async getLogs(productId?: string) {
-    return prisma.stockLog.findMany({
+    return this.db.stockLog.findMany({
       ...(productId && {
         where: {
           productId,
