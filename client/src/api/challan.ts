@@ -56,7 +56,7 @@ export async function confirmChallan(id: string) {
     success: boolean;
     message: string;
     data: ChallanListItem;
-  }>(`/challans/${id}/confirm`);
+  }>(`/challans/${id}`);
 
   return data;
 }
