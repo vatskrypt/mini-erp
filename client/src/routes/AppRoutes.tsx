@@ -16,6 +16,7 @@ import ProductsPage from "@/pages/products/ProductsPage";
 import EditProductPage from "@/pages/products/EditProductPage";
 import CreateChallanPage from "@/pages/challans/CreateChallanPage";
 import ChallanViewPage from "@/pages/challans/ChallanViewPage";
+import EditChallanPage from "@/pages/challans/EditChallanPage";
 
 export default function AppRoutes() {
   return (
@@ -59,6 +60,10 @@ export default function AppRoutes() {
           <Route
               path="/challans/new"
               element={<CreateChallanPage />}
+          />
+          <Route
+              path="/challans/:id/edit"
+              element={<EditChallanPage />}
           />
           <Route
               path="/challans/:id"
