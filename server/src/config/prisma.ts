@@ -12,7 +12,6 @@ const adapter = new PrismaNeon({
 const globalForPrisma = globalThis as typeof globalThis & {
   prisma?: PrismaClient;
 };
-console.log("DATABASE_URL:", process.env.DATABASE_URL);
 const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
