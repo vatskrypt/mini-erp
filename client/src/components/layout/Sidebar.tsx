@@ -11,7 +11,7 @@ export default function Sidebar() {
   );
 
   return (
-    <aside className="flex h-screen w-56 flex-col border-r border-(--border) bg-(--bg)">
+    <aside className="flex w-full flex-col border-b border-(--border) bg-(--bg) md:h-screen md:w-56 md:border-b-0 md:border-r">
       <div className="border-b border-(--border) p-4">
         <h1 className="text-lg font-bold uppercase tracking-wide">
           MINI ERP
@@ -22,7 +22,7 @@ export default function Sidebar() {
         </p>
       </div>
 
-      <nav className="flex flex-1 flex-col p-4">
+      <nav className="flex flex-1 flex-row flex-wrap gap-x-4 px-4 py-2 md:flex-col md:gap-x-0 md:p-4">
         {items.map((item) => (
           <NavLink
             key={item.path}

@@ -8,7 +8,7 @@ interface PanelProps {
 export function Panel({ children, className = "" }: PanelProps) {
   return (
     <section
-      className={`border border-(--border) bg-(--surface) p-4 ${className}`}
+      className={`rounded-xl border border-(--border) bg-(--surface) p-4 shadow-sm ${className}`}
     >
       {children}
     </section>

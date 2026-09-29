@@ -1,7 +1,9 @@
-import type { Challan } from "../../types/challan";
+import type { ChallanListItem } from "../../types/challan";
 import StatusBadge from "./StatusBadge";
+import { Button } from "@/components/ui";
 interface ChallanTableProps {
-  challans: Challan[];
+  challans: ChallanListItem[];
+  confirmingId?: string | null;
   onView?: (id: string) => void;
   onEdit?: (id: string) => void;
   onConfirm?: (id: string) => void;
@@ -12,11 +14,12 @@ export default function ChallanTable({
   onView,
   onEdit,
   onConfirm,
+  confirmingId,
 }: ChallanTableProps) {
   return (
-    <div className="overflow-x-auto rounded-lg border bg-amber-900">
+    <div className="overflow-x-auto rounded-xl border border-(--border) bg-(--surface)">
       <table className="min-w-full">
-        <thead className="bg-amber-950">
+        <thead>
           <tr>
             <th className="px-4 py-3 text-left">Challan No.</th>
             <th className="px-4 py-3 text-left">Customer</th>
@@ -31,7 +34,7 @@ export default function ChallanTable({
           {challans.map((challan) => (
             <tr
               key={challan.id}
-              className="border-t hover:bg-gray-700"
+              className="transition-colors hover:bg-(--surface-raised)"
             >
               <td className="px-4 py-3 font-medium">
                 {challan.challanNumber}
@@ -57,27 +60,22 @@ export default function ChallanTable({
 
               <td className="px-4 py-3">
                 <div className="flex justify-center gap-2">
-                  <button
-                    onClick={() => onView?.(challan.id)}
-                    className="rounded bg-blue-500 px-3 py-1 text-sm text-white"
-                  >
+                  <Button onClick={() => onView?.(challan.id)} className="px-3 py-1 text-sm">
                     View
-                  </button>
+                  </Button>
 
                   {challan.status === "DRAFT" && (
                     <>
-                      <button
-                        onClick={() => onEdit?.(challan.id)}
-                        className="rounded bg-yellow-500 px-3 py-1 text-sm text-white"
-                      >
+                      <Button onClick={() => onEdit?.(challan.id)} className="px-3 py-1 text-sm">
                         Edit
-                      </button>
+                      </Button>
 
                       <button
                         onClick={() => onConfirm?.(challan.id)}
-                        className="rounded bg-green-600 px-3 py-1 text-sm text-white"
+                        disabled={confirmingId === challan.id}
+                        className="rounded-md border border-(--success) bg-(--success)/10 px-3 py-1 text-sm text-(--success) disabled:opacity-60"
                       >
-                        Confirm
+                        {confirmingId === challan.id ? "Confirming…" : "Confirm"}
                       </button>
                     </>
                   )}
