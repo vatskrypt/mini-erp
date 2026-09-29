@@ -11,24 +11,15 @@ export default function CustomersPage() {
   const navigate = useNavigate();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 20,
-    total: 0,
-    pages: 0,
-  });
-
   useEffect(() => {
     async function fetchCustomers() {
       try {
         const response = await getCustomers({
-          page,
+          page: 1,
           limit: 20,
         });
 
         setCustomers(response.data);
-        setPagination(response.pagination);
       } catch (error) {
         console.error(error);
         toast.error("Failed to load customers");
